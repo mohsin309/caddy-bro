@@ -2,24 +2,19 @@
   email your-email@example.com
 }
 
-:80 {
-  redir https://{host}{uri}
+sht.mohsindev.com {
+  # Since you're using Cloudflare, we'll disable Caddy's automatic HTTPS
+  tls internal
+
+  # Proxy all requests to your Next.js application
+  reverse_proxy localhost:3000
 }
 
-:443 {
-  tls {
-    on_demand
-  }
-  
-  @notShorten {
-    not host shorten.com
-  }
-  
-  handle @notShorten {
-    reverse_proxy localhost:3000
-  }
-  
-  handle {
-    respond "Invalid domain" 403
+# Handle subdomains
+*.sht.mohsindev.com {
+  tls internal
+
+  reverse_proxy localhost:3000 {
+    header_up Host {host}
   }
 }
