@@ -1,0 +1,25 @@
+{
+  email your-email@example.com
+}
+
+:80 {
+  redir https://{host}{uri}
+}
+
+:443 {
+  tls {
+    on_demand
+  }
+  
+  @notShorten {
+    not host shorten.com
+  }
+  
+  handle @notShorten {
+    reverse_proxy localhost:3000
+  }
+  
+  handle {
+    respond "Invalid domain" 403
+  }
+}
